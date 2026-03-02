@@ -44,3 +44,19 @@ export interface RoleForm {
     name: string
     permission_ids?: number[]
 }
+
+export interface AllowedArea {
+    id: number
+    name: string
+    latitude: number
+    longitude: number
+    radius: number
+}
+
+export interface AllowedAreaForm {
+    id?: number
+    name: string
+    latitude: number
+    longitude: number
+    radius: number
+}

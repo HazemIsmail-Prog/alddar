@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AllowedAreaController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -21,4 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // roles
     Route::get('/roles/getRelatedLists', [RoleController::class, 'getRelatedLists']);
     Route::apiResource('/roles', RoleController::class)->except(['show']);
+
+    // allowed areas
+    Route::apiResource('/allowed-areas', AllowedAreaController::class)->except(['show']);
 });
