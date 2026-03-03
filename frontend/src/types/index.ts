@@ -45,18 +45,28 @@ export interface RoleForm {
     permission_ids?: number[]
 }
 
+export type LatLng = { lat: number; lng: number }
+
 export interface AllowedArea {
     id: number
     name: string
-    latitude: number
-    longitude: number
-    radius: number
+    polygon?: LatLng[] | null
+    is_active: boolean
 }
 
 export interface AllowedAreaForm {
     id?: number
     name: string
+    is_active: boolean
+    polygon?: LatLng[] | null
+}
+
+export interface Attendance {
+    id: number
+    allowed_area: AllowedArea
+    user: User
     latitude: number
     longitude: number
-    radius: number
+    status: string
+    created_at: string
 }

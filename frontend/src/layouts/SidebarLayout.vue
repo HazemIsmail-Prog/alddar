@@ -15,7 +15,7 @@ import {
     SidebarRail,
     SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { ChevronUp,GalleryVerticalEnd, Home, Users, Shield, ShieldCheck, Clock, MapPin } from 'lucide-vue-next'
+import { ChevronUp,GalleryVerticalEnd, Home, Users, Shield, ShieldCheck, Clock, MapPin, Calendar } from 'lucide-vue-next'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import useAuthStore from '@/stores/auth'
@@ -35,10 +35,16 @@ const sidebarGroups = [
             show: authStore.can('view dashboard'),
             },
             {
-                label: 'Attendance',
+                label: 'Check In/Out',
                 icon: Clock,
-                href: '/attendance',
+                href: '/check-in-out',
                 show: true,
+            },
+            {
+                label: 'Attendances',
+                icon: Calendar,
+                href: '/attendances',
+                show: authStore.can('view attendances'),
             },
         ],
     },

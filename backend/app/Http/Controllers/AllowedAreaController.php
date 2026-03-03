@@ -9,7 +9,8 @@ class AllowedAreaController extends Controller
 {
     public function index()
     {
-        $allowedAreas = AllowedArea::paginate(10);
+        $allowedAreas = AllowedArea::query()
+        ->paginate(10);
         return response()->json($allowedAreas);
     }
 
@@ -17,9 +18,10 @@ class AllowedAreaController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'latitude' => 'required|numeric|min:-90|max:90',
-            'longitude' => 'required|numeric|min:-180|max:180',
-            'radius' => 'required|integer|min:0',
+            'polygon' => 'nullable|array|min:3',
+            'polygon.*.lat' => 'required_with:polygon|numeric|min:-90|max:90',
+            'polygon.*.lng' => 'required_with:polygon|numeric|min:-180|max:180',
+            'is_active' => 'required|boolean',
         ]);
         $allowedArea = AllowedArea::create($validated);
         return response()->json($allowedArea, 201);
@@ -29,9 +31,10 @@ class AllowedAreaController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'latitude' => 'required|numeric|min:-90|max:90',
-            'longitude' => 'required|numeric|min:-180|max:180',
-            'radius' => 'required|integer|min:0',
+            'polygon' => 'nullable|array|min:3',
+            'polygon.*.lat' => 'required_with:polygon|numeric|min:-90|max:90',
+            'polygon.*.lng' => 'required_with:polygon|numeric|min:-180|max:180',
+            'is_active' => 'required|boolean',
         ]);
         $allowedArea->update($validated);
         return response()->json($allowedArea, 200);

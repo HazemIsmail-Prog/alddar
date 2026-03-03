@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('allowed_areas', function (Blueprint $table) {
+        Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->json('polygon')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('allowed_area_id')->constrained('allowed_areas');
+            $table->decimal('latitude', 10, 8);
+            $table->decimal('longitude', 11, 8);
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('allowed_areas');
+        Schema::dropIfExists('attendances');
     }
 };

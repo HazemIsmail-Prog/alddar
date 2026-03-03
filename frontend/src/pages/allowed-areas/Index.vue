@@ -107,9 +107,7 @@ watch(filters.value, () => {
             <TableHeader>
                 <TableRow>
                     <TableHead class="w-[100px]">Name</TableHead>
-                    <TableHead>Latitude</TableHead>
-                    <TableHead>Longitude</TableHead>
-                    <TableHead>Radius</TableHead>
+                    <TableHead>Is Active</TableHead>
                     <TableHead v-if="abilities.showActions" class="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
@@ -119,9 +117,7 @@ watch(filters.value, () => {
                   <TableCell class="font-medium">
                   {{ allowedArea.name }}
                   </TableCell>
-                  <TableCell>{{ allowedArea.latitude }}</TableCell>
-                  <TableCell>{{ allowedArea.longitude }}</TableCell>
-                  <TableCell>{{ allowedArea.radius }}</TableCell>
+                  <TableCell>{{ allowedArea.is_active ? 'Yes' : 'No' }}</TableCell>
 
                   <TableCell v-if="abilities.showActions" class="flex gap-2 justify-end">
                       <Edit v-if="abilities.canEdit" @click="handleOpenForm(allowedArea)" class="size-5 cursor-pointer" />

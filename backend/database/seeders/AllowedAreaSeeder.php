@@ -16,17 +16,26 @@ class AllowedAreaSeeder extends Seeder
         $allowedAreas = [
             [
                 'name' => 'Salmiya',
-                'latitude' => 29.340300,
-                'longitude' => 48.073300,
-                'radius' => 1345,
+                'polygon' => [
+                    ['lat' => 29.340300, 'lng' => 48.073300],
+                    ['lat' => 29.340300, 'lng' => 48.073300],
+                    ['lat' => 29.340300, 'lng' => 48.073300],
+                ],
+                'is_active' => true,
             ],
             [
                 'name' => 'Kuwait City',
-                'latitude' => 29.3759,
-                'longitude' => 47.9774,
-                'radius' => 8000,
+                'polygon' => [
+                    ['lat' => 29.3759, 'lng' => 47.9774],
+                    ['lat' => 29.3759, 'lng' => 47.9774],
+                    ['lat' => 29.3759, 'lng' => 47.9774],
+                    ['lat' => 29.3759, 'lng' => 47.9774],
+                ],
+                'is_active' => true,
             ],
         ];
-        AllowedArea::insert($allowedAreas);
+        foreach ($allowedAreas as $allowedArea) {
+            AllowedArea::create($allowedArea);
+        }
     }
 }

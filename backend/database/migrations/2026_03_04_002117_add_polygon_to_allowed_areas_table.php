@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('allowed_areas', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->json('polygon')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+        Schema::table('allowed_areas', function (Blueprint $table) {
+            //
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('allowed_areas');
+        Schema::table('allowed_areas', function (Blueprint $table) {
+            //
+        });
     }
 };
