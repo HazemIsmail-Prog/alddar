@@ -40,16 +40,10 @@ const sidebarGroups = [
                 href: '/check-in-out',
                 show: true,
             },
-            {
-                label: 'Attendances',
-                icon: Calendar,
-                href: '/attendances',
-                show: authStore.can('view attendances'),
-            },
         ],
     },
     {
-        label: 'Admin',
+        label: 'Super Admin',
         show: authStore.canAny(['view permissions', 'view roles', 'view users']),
         items: [
             {
@@ -70,11 +64,23 @@ const sidebarGroups = [
                 href: '/users',
                 show: authStore.can('view users'),
             },
+        ],
+    },
+    {
+        label: 'Admin',
+        show: authStore.canAny(['view allowed areas', 'view attendances']),
+        items: [
             {
                 label: 'Allowed Areas',
                 icon: MapPin,
                 href: '/allowed-areas',
                 show: authStore.can('view allowed areas'),
+            },
+            {
+                label: 'Attendances',
+                icon: Calendar,
+                href: '/attendances',
+                show: authStore.can('view attendances'),
             },
         ],
     },

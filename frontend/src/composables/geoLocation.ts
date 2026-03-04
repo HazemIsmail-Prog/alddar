@@ -4,6 +4,7 @@ export function useGeoLocation() {
     const coords = ref({ latitude: 0, longitude: 0 });
     const isSupported = 'navigator' in window && 'geolocation' in navigator;
     const permissionDenied = ref(false);
+    const locationErrorMessage = ref('');
 
     let watcher: number | null = null;
 
@@ -21,10 +22,18 @@ export function useGeoLocation() {
                 (position) => {
                     coords.value = position.coords;
                     permissionDenied.value = false;
+                    locationErrorMessage.value = '';
                 },
                 (error) => {
                     if (error.code === error.PERMISSION_DENIED) {
                         permissionDenied.value = true;
+                        locationErrorMessage.value = 'Location access denied. Please allow access to your location to use this feature.';
+                    }
+                    if (error.code === error.POSITION_UNAVAILABLE) {
+                        locationErrorMessage.value = 'Location information is unavailable.';
+                    }
+                    if (error.code === error.TIMEOUT) {
+                        locationErrorMessage.value = 'The request timed out.';
                     }
                 }
             );
@@ -43,5 +52,6 @@ export function useGeoLocation() {
         isSupported,
         coords,
         permissionDenied,
+        locationErrorMessage,
     };
 }

@@ -82,6 +82,10 @@ class PermissionSeeder extends Seeder
                 'name' => 'delete allowed area',
                 'group' => 'allowed areas',
             ],
+            [
+                'name' => 'view attendances',
+                'group' => 'attendances',
+            ],
         ];
 
         Permission::insert($permissions);

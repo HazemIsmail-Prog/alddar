@@ -135,7 +135,7 @@ const handleSubmitForm = () => {
 <template>
     <Sheet :open="isFormOpen" @update:open="isFormOpen = false">
 
-        <SheetContent class="w-1/2 !max-w-1/2" as="form" @submit.prevent="handleSubmitForm">
+        <SheetContent class="w-screen !max-w-screen md:w-1/2 md:max-w-1/2" as="form" @submit.prevent="handleSubmitForm">
             
             <SheetHeader>
                 <SheetTitle>{{ selectedRecord ? 'Edit Allowed Area' : 'Create Allowed Area' }}</SheetTitle>

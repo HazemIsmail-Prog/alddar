@@ -10,6 +10,9 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        if(!$request->user()->hasPermission('view attendances')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
         $month = $request->month ?? date('m');
         $year = $request->year ?? date('Y');
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
@@ -57,7 +60,7 @@ class AttendanceController extends Controller
     {
         $allowedAreas = AllowedArea::query()
         ->where('is_active', true)
-        ->paginate(10);
+        ->get();
         return response()->json($allowedAreas, 200);
     }
 }
