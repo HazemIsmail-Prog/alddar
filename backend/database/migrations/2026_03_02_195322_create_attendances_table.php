@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('allowed_area_id')->constrained('allowed_areas');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
+            $table->date('date');
+            $table->time('time');
             $table->string('status');
             $table->timestamps();
         });

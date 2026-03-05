@@ -66,6 +66,22 @@ onMounted(() => {
   getRecords(apiUrl, filters.value)
 })
 
+const getTotalTime = (date: string, checkIn: string, checkOut: string) => {
+
+        if (checkIn && checkOut) {
+            return ( new Date(date + 'T' + checkOut).getTime() - new Date(date + 'T' + checkIn).getTime()) / 1000;
+        }
+        return 0;
+    };
+
+
+    const getTransformedTotalTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+        return { hours, minutes, remainingSeconds };
+    }
+
 const computedRecords = computed(() => {
   // Group by (date + user), find earliest "in" and latest "out" attendance per user per date
   const groups: Record<
@@ -74,14 +90,14 @@ const computedRecords = computed(() => {
   > = {};
 
   records.value.forEach((attendance: Attendance) => {
-    const date = new Date(attendance.created_at).toISOString().split('T')[0] as string;
-    const user = attendance.user.name;
-    const groupKey = `${date}_${user}`;
+    // const date = new Date(attendance.date);
+    const user = attendance.user?.name ?? '';
+    const groupKey = `${attendance.date}_${user}`;
 
     // Initialize group if not present
     if (!groups[groupKey]) {
       groups[groupKey] = {
-        date,
+        date: attendance.date,
         user,
         checkIn: null,
         checkOut: null,
@@ -94,17 +110,17 @@ const computedRecords = computed(() => {
       // Earliest check in
       if (
         !groups[groupKey].checkIn ||
-        attendance.created_at < groups[groupKey].checkIn
+        attendance.time < groups[groupKey].checkIn
       ) {
-        groups[groupKey].checkIn = attendance.created_at;
+        groups[groupKey].checkIn = attendance.time;
       }
     } else if (attendance.status === "out") {
       // Latest check out
       if (
         !groups[groupKey].checkOut ||
-        attendance.created_at > groups[groupKey].checkOut
+        attendance.time > groups[groupKey].checkOut
       ) {
-        groups[groupKey].checkOut = attendance.created_at;
+        groups[groupKey].checkOut = attendance.time;
       }
 
       groups[groupKey].total = ((new Date(groups[groupKey].checkOut ?? '').getTime() - new Date(groups[groupKey].checkIn ?? '').getTime()) / 60000).toFixed(2);
@@ -186,22 +202,26 @@ watch(filters.value, () => {
 
             <TableHeader>
                 <TableRow>
-                    <TableHead @click="handleSort('date')">Date</TableHead>
-                    <TableHead @click="handleSort('user')">User</TableHead>
-                    <TableHead>Check In</TableHead>
-                    <TableHead>Check Out</TableHead>
-                    <TableHead>Total Minutes</TableHead>
+                    <TableHead class="text-center" @click="handleSort('date')">Date</TableHead>
+                    <TableHead class="text-center" @click="handleSort('user')">User</TableHead>
+                    <TableHead class="text-center">Check In</TableHead>
+                    <TableHead class="text-center">Check Out</TableHead>
+                    <TableHead class="text-center">Hours</TableHead>
+                    <TableHead class="text-center">Minutes</TableHead>
+                    <TableHead class="text-center">Seconds</TableHead>
                     <TableHead v-if="abilities.showActions" class="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
 
             <TableBody>
                 <TableRow v-for="attendance in computedRecords" :key="attendance.date + attendance.user">
-                    <TableCell>{{ attendance.date }}</TableCell>
-                    <TableCell>{{ attendance.user }}</TableCell>
-                    <TableCell>{{ attendance.checkIn ? new Date(attendance.checkIn).toLocaleTimeString() : '-' }}</TableCell>
-                    <TableCell>{{ attendance.checkOut ? new Date(attendance.checkOut).toLocaleTimeString() : '-' }}</TableCell>
-                    <TableCell>{{ attendance.total }} minutes</TableCell>
+                    <TableCell class="text-center">{{ attendance.date }}</TableCell>
+                    <TableCell class="text-center">{{ attendance.user }}</TableCell>
+                    <TableCell class="text-center">{{ attendance.checkIn ?? '-' }}</TableCell>
+                    <TableCell class="text-center">{{ attendance.checkOut ?? '-' }}</TableCell>
+                    <TableCell class="text-center">{{ getTransformedTotalTime(getTotalTime(attendance.date, attendance.checkIn ?? '', attendance.checkOut ?? '')).hours ?? '-' }}</TableCell>
+                    <TableCell class="text-center">{{ getTransformedTotalTime(getTotalTime(attendance.date, attendance.checkIn ?? '', attendance.checkOut ?? '')).minutes ?? '-' }}</TableCell>
+                    <TableCell class="text-center">{{ getTransformedTotalTime(getTotalTime(attendance.date, attendance.checkIn ?? '', attendance.checkOut ?? '')).remainingSeconds ?? '-' }}</TableCell>
                     <TableCell v-if="abilities.showActions" class="flex gap-2 justify-end">
                     </TableCell>
                 </TableRow>

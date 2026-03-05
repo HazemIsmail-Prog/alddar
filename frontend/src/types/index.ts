@@ -63,10 +63,12 @@ export interface AllowedAreaForm {
 
 export interface Attendance {
     id: number
-    allowed_area: AllowedArea
-    user: User
+    allowed_area?: AllowedArea
+    user?: User
     latitude: number
     longitude: number
+    date: string
+    time: string
     status: string
     created_at: string
 }

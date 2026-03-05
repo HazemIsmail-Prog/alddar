@@ -15,18 +15,19 @@ class AttendanceController extends Controller
         }
         $month = $request->month ?? date('m');
         $year = $request->year ?? date('Y');
-        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
-        $endDate = Carbon::create($year, $month, 1)->endOfMonth();
+        $startDate = Carbon::create($year, $month, 1)->startOfMonth()->format('Y-m-d');
+        $endDate = Carbon::create($year, $month, 1)->endOfMonth()->format('Y-m-d');
         $attendances = Attendance::query()
-            ->with('allowedArea', 'user')
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate)
+            ->with( 'user')
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
             ->paginate(100000);
         return response()->json($attendances);
     }
 
     public function store(Request $request)
     {
+        sleep(3);
         $validated = $request->validate([
             'allowed_area_id' => 'required|exists:allowed_areas,id',
             'latitude' => 'required|numeric|min:-90|max:90',
@@ -34,33 +35,26 @@ class AttendanceController extends Controller
             'status' => 'required|string|max:255',
         ]);
         $validated['user_id'] = $request->user()->id;
+        $validated['date'] = Carbon::now()->format('Y-m-d');
+        $validated['time'] = Carbon::now()->format('H:i:s');
         $attendance = Attendance::create($validated);
         return response()->json($attendance, 201);
     }
 
-    public function update(Request $request, Attendance $attendance)
+    public function getAllowedAreas(Request $request)
     {
-        $validated = $request->validate([
-            'allowed_area_id' => 'required|exists:allowed_areas,id',
-            'latitude' => 'required|numeric|min:-90|max:90',
-            'longitude' => 'required|numeric|min:-180|max:180',
-            'status' => 'required|string|max:255',
-        ]);
-        $attendance->update($validated);
-        return response()->json($attendance, 200);
-    }
+        $userTodaysActivities = Attendance::query()
+        ->where('user_id', $request->user()->id)
+        ->whereDate('date', Carbon::now()->format('Y-m-d'))
+        ->get();
 
-    public function destroy(Attendance $attendance)
-    {
-        $attendance->delete();
-        return response()->json(['message' => 'Attendance deleted successfully'], 200);
-    }
 
-    public function getAllowedAreas()
-    {
         $allowedAreas = AllowedArea::query()
         ->where('is_active', true)
         ->get();
-        return response()->json($allowedAreas, 200);
+        return response()->json([
+            'allowedAreas' => $allowedAreas, 
+            'userTodaysActivities' => $userTodaysActivities,
+        ], 200);
     }
 }

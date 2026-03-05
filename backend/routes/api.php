@@ -29,5 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // attendances
     Route::get('/attendances/getAllowedAreas', [AttendanceController::class, 'getAllowedAreas']);
-    Route::apiResource('/attendances', AttendanceController::class)->except(['show']);
+    Route::apiResource('/attendances', AttendanceController::class)->except(['show', 'update', 'destroy']);
 });
